@@ -14,53 +14,281 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_reviews: {
+        Row: {
+          brief_clarity: number
+          client_id: string
+          comment: string | null
+          communication: number
+          created_at: string
+          editor_id: string
+          id: string
+          order_id: string
+          rating: number
+        }
+        Insert: {
+          brief_clarity: number
+          client_id: string
+          comment?: string | null
+          communication: number
+          created_at?: string
+          editor_id: string
+          id?: string
+          order_id: string
+          rating: number
+        }
+        Update: {
+          brief_clarity?: number
+          client_id?: string
+          comment?: string | null
+          communication?: number
+          created_at?: string
+          editor_id?: string
+          id?: string
+          order_id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disputes: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          id: string
+          opened_by: string
+          order_id: string
+          q1_answer: string | null
+          q1_type: string | null
+          q2_answer: string | null
+          q2_type: string | null
+          reason: string
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          opened_by: string
+          order_id: string
+          q1_answer?: string | null
+          q1_type?: string | null
+          q2_answer?: string | null
+          q2_type?: string | null
+          reason: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          opened_by?: string
+          order_id?: string
+          q1_answer?: string | null
+          q1_type?: string | null
+          q2_answer?: string | null
+          q2_type?: string | null
+          reason?: string
+          resolved_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       editor_profiles: {
         Row: {
+          accepts_recurrent: boolean
+          accepts_sos: boolean
           base_price: number
           bio: string | null
           created_at: string
           id: string
           is_featured: boolean
+          is_verified: boolean
           level: Database["public"]["Enums"]["editor_level"]
+          libre_since: string
           portfolio_links: Json
           rating_avg: number
           rating_count: number
           specialty: string
           status: Database["public"]["Enums"]["editor_status"]
           updated_at: string
+          verified_at: string | null
         }
         Insert: {
+          accepts_recurrent?: boolean
+          accepts_sos?: boolean
           base_price?: number
           bio?: string | null
           created_at?: string
           id: string
           is_featured?: boolean
+          is_verified?: boolean
           level?: Database["public"]["Enums"]["editor_level"]
+          libre_since?: string
           portfolio_links?: Json
           rating_avg?: number
           rating_count?: number
           specialty: string
           status?: Database["public"]["Enums"]["editor_status"]
           updated_at?: string
+          verified_at?: string | null
         }
         Update: {
+          accepts_recurrent?: boolean
+          accepts_sos?: boolean
           base_price?: number
           bio?: string | null
           created_at?: string
           id?: string
           is_featured?: boolean
+          is_verified?: boolean
           level?: Database["public"]["Enums"]["editor_level"]
+          libre_since?: string
           portfolio_links?: Json
           rating_avg?: number
           rating_count?: number
           specialty?: string
           status?: Database["public"]["Enums"]["editor_status"]
           updated_at?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      editor_reviews: {
+        Row: {
+          client_id: string
+          comment: string | null
+          communication: number
+          created_at: string
+          deadline_score: number
+          editor_id: string
+          id: string
+          order_id: string
+          rating: number
+        }
+        Insert: {
+          client_id: string
+          comment?: string | null
+          communication: number
+          created_at?: string
+          deadline_score: number
+          editor_id: string
+          id?: string
+          order_id: string
+          rating: number
+        }
+        Update: {
+          client_id?: string
+          comment?: string | null
+          communication?: number
+          created_at?: string
+          deadline_score?: number
+          editor_id?: string
+          id?: string
+          order_id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editor_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          file_url: string | null
+          id: string
+          order_id: string
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          order_id: string
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          order_id?: string
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
       orders: {
         Row: {
+          brief_locked_at: string | null
           briefing: string
           client_id: string
           created_at: string
@@ -70,15 +298,20 @@ export type Database = {
           editor_amount: number
           editor_id: string
           id: string
+          max_revisions: number
           package_name: string
           platform_fee: number
           references_text: string | null
+          revision_count: number
+          revision_locked: boolean
+          scope_change_requested: boolean
           status: Database["public"]["Enums"]["order_status"]
           total_amount: number
           updated_at: string
           video_type: string
         }
         Insert: {
+          brief_locked_at?: string | null
           briefing: string
           client_id: string
           created_at?: string
@@ -88,15 +321,20 @@ export type Database = {
           editor_amount: number
           editor_id: string
           id?: string
+          max_revisions?: number
           package_name: string
           platform_fee: number
           references_text?: string | null
+          revision_count?: number
+          revision_locked?: boolean
+          scope_change_requested?: boolean
           status?: Database["public"]["Enums"]["order_status"]
           total_amount: number
           updated_at?: string
           video_type: string
         }
         Update: {
+          brief_locked_at?: string | null
           briefing?: string
           client_id?: string
           created_at?: string
@@ -106,9 +344,13 @@ export type Database = {
           editor_amount?: number
           editor_id?: string
           id?: string
+          max_revisions?: number
           package_name?: string
           platform_fee?: number
           references_text?: string | null
+          revision_count?: number
+          revision_locked?: boolean
+          scope_change_requested?: boolean
           status?: Database["public"]["Enums"]["order_status"]
           total_amount?: number
           updated_at?: string
@@ -164,28 +406,43 @@ export type Database = {
         Row: {
           account_type: string
           avatar_url: string | null
+          cancellation_count: number
+          client_score: number
+          client_score_count: number
           created_at: string
+          dispute_count: number
           full_name: string
           id: string
           phone: string | null
+          total_orders: number
           updated_at: string
         }
         Insert: {
           account_type?: string
           avatar_url?: string | null
+          cancellation_count?: number
+          client_score?: number
+          client_score_count?: number
           created_at?: string
+          dispute_count?: number
           full_name: string
           id: string
           phone?: string | null
+          total_orders?: number
           updated_at?: string
         }
         Update: {
           account_type?: string
           avatar_url?: string | null
+          cancellation_count?: number
+          client_score?: number
+          client_score_count?: number
           created_at?: string
+          dispute_count?: number
           full_name?: string
           id?: string
           phone?: string | null
+          total_orders?: number
           updated_at?: string
         }
         Relationships: []
@@ -418,3 +675,5 @@ export const Constants = {
     },
   },
 } as const
+A new version of Supabase CLI is available: v2.98.2 (currently installed v2.98.1)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli
