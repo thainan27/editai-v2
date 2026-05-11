@@ -36,13 +36,23 @@ const Pagamento = () => {
   useEffect(() => {
     if (!orderId || !user) return;
     (async () => {
-      const { data } = await supabase
+      const { data: orderData } = await supabase
         .from("orders")
-        .select("id, video_type, total_amount, platform_fee, editor_amount, deadline, status, package_name, editor:profiles!orders_editor_id_fkey(full_name)")
+        .select("id, video_type, total_amount, platform_fee, editor_amount, deadline, status, package_name, editor_id")
         .eq("id", orderId)
         .eq("client_id", user.id)
         .single();
-      setOrder(data as unknown as OrderDetail | null);
+
+      if (!orderData) { setLoading(false); return; }
+
+      // Busca nome do editor separadamente
+      const { data: editorProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", orderData.editor_id)
+        .single();
+
+      setOrder({ ...orderData, editor: editorProfile ?? null } as unknown as OrderDetail);
       setLoading(false);
     })();
   }, [orderId, user]);
