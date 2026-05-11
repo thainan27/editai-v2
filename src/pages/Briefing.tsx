@@ -175,16 +175,26 @@ const Briefing = () => {
   useEffect(() => {
     if (!editorId) return;
     (async () => {
-      const { data } = await supabase
+      // Busca perfil do editor
+      const { data: ep } = await supabase
         .from("editor_profiles")
-        .select("id, bio, specialty, level, base_price, rating_avg, rating_count, profiles(full_name)")
+        .select("id, bio, specialty, level, base_price, rating_avg, rating_count")
         .eq("id", editorId)
         .eq("status", "aprovado")
         .single();
-      setEditor(data as unknown as EditorSummary | null);
-      if (data) {
-        setForm(f => ({ ...f, total_amount: String((data as unknown as EditorSummary).base_price) }));
-      }
+
+      if (!ep) { setLoadingEditor(false); return; }
+
+      // Busca nome do editor separadamente
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", editorId)
+        .single();
+
+      const editor = { ...ep, profiles: profile ?? null } as unknown as EditorSummary;
+      setEditor(editor);
+      setForm(f => ({ ...f, total_amount: String(editor.base_price) }));
       setLoadingEditor(false);
     })();
   }, [editorId]);

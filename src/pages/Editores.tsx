@@ -33,13 +33,31 @@ const Editores = () => {
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
+      // Busca editores aprovados
+      const { data: editorData } = await supabase
         .from("editor_profiles")
-        .select("id, bio, specialty, level, base_price, rating_avg, rating_count, is_featured, accepts_sos, profiles(full_name, avatar_url)")
+        .select("id, bio, specialty, level, base_price, rating_avg, rating_count, is_featured, accepts_sos")
         .eq("status", "aprovado")
         .order("is_featured", { ascending: false })
         .order("rating_avg", { ascending: false });
-      setEditors((data as unknown as EditorRow[]) ?? []);
+
+      if (!editorData || editorData.length === 0) { setLoading(false); return; }
+
+      // Busca os nomes separadamente
+      const ids = editorData.map(e => e.id);
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", ids);
+
+      const profileMap = Object.fromEntries((profileData ?? []).map(p => [p.id, p]));
+
+      const merged = editorData.map(e => ({
+        ...e,
+        profiles: profileMap[e.id] ?? null,
+      }));
+
+      setEditors(merged as unknown as EditorRow[]);
       setLoading(false);
     })();
   }, []);
