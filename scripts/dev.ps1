@@ -16,6 +16,7 @@ switch ($Command) {
         npm run build; if ($LASTEXITCODE -ne 0) { Write-Red "Build falhou!"; exit 1 }
         $d = Get-Date -Format "yyyy-MM-dd HH:mm"; git add .; git commit -m "deploy: $d"; git push
         Write-Green "Deploy completo!"
+        Write-Blue "Site: https://editai-v2.vercel.app"
     }
     "status" { git status --short; git log --oneline -3 }
     default  {
